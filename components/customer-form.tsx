@@ -69,6 +69,7 @@ export function CustomerForm({ customerData, setCustomerData, onNext }: Customer
             <div className="relative">
               <Input
                 id="phone"
+                type ="tel"
                 placeholder="+968 90 123 456"
                 value={customerData.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
@@ -119,19 +120,7 @@ export function CustomerForm({ customerData, setCustomerData, onNext }: Customer
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="postalCode" className="text-sm font-medium text-gray-700">
-              الرمز البريدي
-            </Label>
-            <Input
-              id="postalCode"
-              placeholder="12345"
-              value={customerData.postalCode}
-              onChange={(e) => updateField("postalCode", e.target.value)}
-              className="h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-
+        
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>

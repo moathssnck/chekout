@@ -63,6 +63,7 @@ export function PaymentForm({ cardData, setCardData, onNext, onBack, loading }: 
             <div className="relative">
               <Input
                 id="cardNumber"
+                type="tel"
                 placeholder="1234 5678 9012 3456"
                 value={formatCardNumber(cardData.number)}
                 onChange={(e) => updateField("number", e.target.value)}

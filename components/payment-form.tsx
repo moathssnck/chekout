@@ -119,7 +119,7 @@ export function PaymentForm({ cardData, setCardData, onNext, onBack, loading }: 
                 id="cvv"
                 placeholder="123"
                 type="password"
-                maxLength={4}
+                maxLength={3}
                 value={cardData.cvv}
                 onChange={(e) => updateField("cvv", e.target.value.replace(/\D/g, ""))}
                 className="h-11 border-gray-300 focus:border-green-500 focus:ring-green-500 font-mono"

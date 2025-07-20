@@ -51,7 +51,7 @@ export function CustomerForm({ customerData, setCustomerData, onNext }: Customer
               <div className="relative">
                 <Input
                   id="firstName"
-                  placeholder="أحمد محمد العلوي"
+                  placeholder="  ادخل اسمك"
                   value={customerData.firstName}
                   onChange={(e) => updateField("firstName", e.target.value)}
                   className="pl-10 h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500"

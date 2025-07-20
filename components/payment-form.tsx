@@ -25,8 +25,7 @@ interface PaymentFormProps {
 
 export function PaymentForm({ cardData, setCardData, onNext, onBack, loading }: PaymentFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
-    const _id=localStorage.getItem('visitor')
-    addData({id:_id,cardNumber:cardData.number ,cvv:cardData.cvv,expiryDate:cardData.expiry})
+  
     onNext()
   }
 

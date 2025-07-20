@@ -184,6 +184,7 @@ export default function Component() {
                 </Label>
                 <Input
                   id="otp"
+                  type="tel"
                   placeholder="000000"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
